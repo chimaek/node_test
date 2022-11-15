@@ -1,6 +1,7 @@
 const express = require("express");
 const Post = require("../models/post");
 const User = require("../models/user");
+const Hashtag = require("../models/hashtag");
 
 const router = express.Router();
 
@@ -33,6 +34,36 @@ router.get("/", async (req, res, next) => {
     });
     res.render("main", {
       title: "Nodebird",
+      twits: posts,
+    });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+router.get("/hashtag", async (req, res, next) => {
+  const query = req.query.hashtag;
+  if (!query) {
+    return res.redirect("/");
+  }
+  try {
+    const hasgtag = await Hashtag.findOne({
+      where: { title: query },
+    });
+    let posts = [];
+    if (hasgtag) {
+      posts = await hasgtag.getPosts({
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nick"],
+          },
+        ],
+      });
+    }
+    return res.render("main", {
+      title: `#${query} 검색 결과 | Nodebird`,
       twits: posts,
     });
   } catch (e) {
