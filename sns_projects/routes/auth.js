@@ -1,33 +1,33 @@
 const express = require("express");
-const user = require("../models/user");
+const passport = require("passport");
+const local = require("passport-local");
+const kakao = require("passport-kakao");
 const bcrypt = require("bcrypt");
-const passPort = require("passport");
-const passPortKakao = require("passport-kakao");
-const { isNotLoggedIn, isLoggedIn } = require("./middlewares");
+const User = require("../models/user");
+const { isLoggedId, isNotLoggedId } = require("../routes/middleware");
 const router = express.Router();
 
-router.post("/join", isNotLoggedIn, async (req, res, next) => {
+router.post("/join", isLoggedId, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
-    const exUser = await user.findOne({ where: { email } });
+    const exUser = await User.findOne({ where: { email } });
     if (exUser) {
       return res.redirect("/join?error=exist");
     }
     const hash = await bcrypt.hash(password, 12);
-    await user.create({
+    await User.create({
       email,
       nick,
       password: hash,
     });
     return res.redirect("/");
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return next(error);
   }
 });
-
-router.post("/login", isNotLoggedIn, (req, res, next) => {
-  passPort.authenticate("local", (authError, user, info) => {
+router.post("/login", isNotLoggedId, (req, res, next) => {
+  passport.authenticate("local", (authError, user, info) => {
     if (authError) {
       console.error(authError);
       return next(authError);
@@ -44,18 +44,16 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
     });
   })(req, res, next);
 });
-
-router.get("/logout", isLoggedIn, (req, res) => {
+router.get("/logout", (req, res, next) => {
   req.logout();
   req.session.destroy();
   res.redirect("/");
 });
 
-router.get("/kakao", passPort.authenticate("kakao"));
-
+router.get("/kakao", passport.authenticate("kakao"));
 router.get(
   "/kakao/callback",
-  passPort.authenticate("kakao", {
+  passport.authenticate("kakao", {
     failureRedirect: "/",
   }),
   (req, res) => {
