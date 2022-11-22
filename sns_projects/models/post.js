@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
-
+const User = require("./user");
+const Hashtag = require("./hashtag");
 module.exports = class Post extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -15,13 +16,13 @@ module.exports = class Post extends Sequelize.Model {
       },
       {
         sequelize,
-        timestamps: true,
-        underscored: false,
-        modelName: "Post",
+        timestamps: "true",
         tableName: "posts",
+        modelName: "Post",
         paranoid: false,
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
+        underscored: false,
       }
     );
   }
