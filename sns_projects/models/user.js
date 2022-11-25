@@ -1,11 +1,12 @@
 const Sequelize = require("sequelize");
+
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
         email: {
           type: Sequelize.STRING(40),
-          allowNull: false,
+          allowNull: true,
           unique: true,
         },
         nick: {
@@ -21,6 +22,10 @@ module.exports = class User extends Sequelize.Model {
           allowNull: false,
           defaultValue: "local",
         },
+        snsId: {
+          type: Sequelize.STRING(30),
+          allowNull: true,
+        },
       },
       {
         sequelize,
@@ -29,11 +34,12 @@ module.exports = class User extends Sequelize.Model {
         modelName: "User",
         tableName: "users",
         paranoid: true,
-        charset: "utf8mb4",
-        collate: "utf8mb4_general_ci",
+        charset: "utf8",
+        collate: "utf8_general_ci",
       }
     );
   }
+
   static associate(db) {
     db.User.hasMany(db.Post);
     db.User.belongsToMany(db.User, {

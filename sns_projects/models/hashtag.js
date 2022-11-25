@@ -13,15 +13,16 @@ module.exports = class Hashtag extends Sequelize.Model {
       {
         sequelize,
         timestamps: true,
-        tableName: "hashtags",
+        underscored: false,
         modelName: "Hashtag",
+        tableName: "hashtags",
         paranoid: false,
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
-        underscored: false,
       }
     );
   }
+
   static associate(db) {
     db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" });
   }

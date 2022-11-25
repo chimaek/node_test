@@ -1,13 +1,11 @@
 const express = require("express");
 const passport = require("passport");
-const local = require("passport-local");
-const kakao = require("passport-kakao");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const { isLoggedId, isNotLoggedId } = require("../routes/middleware");
+const { isNotLoggedId, isLoggedId } = require("../routes/middleware");
 const router = express.Router();
 
-router.post("/join", isLoggedId, async (req, res, next) => {
+router.post("/join", isNotLoggedId, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
@@ -44,7 +42,7 @@ router.post("/login", isNotLoggedId, (req, res, next) => {
     });
   })(req, res, next);
 });
-router.get("/logout", (req, res, next) => {
+router.get("/logout", isLoggedId, (req, res, next) => {
   req.logout();
   req.session.destroy();
   res.redirect("/");
