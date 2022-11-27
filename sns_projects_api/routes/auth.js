@@ -1,11 +1,11 @@
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-const User = require("../models/user");
-const { isNotLoggedId, isLoggedId } = require("../routes/middleware");
+const User = require("../../sns_projects/models/user");
+const { isLoggedIn, isNotLoggedIn } = require("./middleware");
 const router = express.Router();
 
-router.post("/join", isNotLoggedId, async (req, res, next) => {
+router.post("/join", isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
@@ -24,7 +24,7 @@ router.post("/join", isNotLoggedId, async (req, res, next) => {
     return next(error);
   }
 });
-router.post("/login", isNotLoggedId, (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (authError, user, info) => {
     if (authError) {
       console.error(authError);
@@ -42,7 +42,7 @@ router.post("/login", isNotLoggedId, (req, res, next) => {
     });
   })(req, res, next);
 });
-router.get("/logout", isLoggedId, (req, res, next) => {
+router.get("/logout", isLoggedIn, (req, res, next) => {
   req.logout();
   req.session.destroy();
   res.redirect("/");

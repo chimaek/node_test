@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 
 const { Post, Hashtag } = require("../models");
-const { isLoggedId } = require("./middleware");
+const { isLoggedId } = require("../../sns_projects_api/routes/middleware");
 
 const router = express.Router();
 

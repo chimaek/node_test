@@ -12,7 +12,7 @@ const passportConfig = require("./passport");
 const nunjucks = require("nunjucks");
 const path = require("path");
 const pageRouter = require("./routes/page");
-const authRouter = require("./routes/auth");
+const authRouter = require("../sns_projects_api/routes/auth");
 const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
 

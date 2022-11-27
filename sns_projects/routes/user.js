@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { isLoggedId } = require("./middleware");
+const { isLoggedId } = require("../../sns_projects_api/routes/middleware");
 const User = require("../models/user");
 
 const router = express.Router();
